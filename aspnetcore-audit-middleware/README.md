@@ -5,6 +5,8 @@ A lightweight library to audit requests / responses in your ASP.Net Core applica
 ## How to use it
 
 [![NuGet Version](https://img.shields.io/nuget/v/Com.RFranco.AspNetCore.Audit.svg)](https://www.nuget.org/packages/Com.RFranco.AspNetCore.Audit)
+
+
 First of all, add the package to the project
 
 ```bash
