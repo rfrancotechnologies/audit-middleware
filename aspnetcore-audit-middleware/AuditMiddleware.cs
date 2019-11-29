@@ -28,33 +28,37 @@ namespace Com.RFranco.AsptNetCore.Audit
         public async Task Invoke(HttpContext context)
         {
             if (!MustBeAudited(context)) await Next(context);
-
-            var originalBodyStream = context.Response.Body;
-            using (var responseBody = new MemoryStream())
+            else
             {
-                context.Response.Body = responseBody;
-                try
+                var originalBodyStream = context.Response.Body;
+                using (var responseBody = new MemoryStream())
                 {
-                    await Next(context);
-                }
-                finally
-                {
-                    AuditInfo auditInfo = await context.ExtractAuditInfo();
-                    await responseBody.CopyToAsync(originalBodyStream);
-                    using (Logger.BeginScope(auditInfo.ToDictionary()))
+                    context.Response.Body = responseBody;
+                    try
                     {
-                        Logger.LogInformation($"{auditInfo}");
+                        await Next(context);
+                    }
+                    finally
+                    {
+                        AuditInfo auditInfo = await context.ExtractAuditInfo();
+                        await responseBody.CopyToAsync(originalBodyStream);
+                        using (Logger.BeginScope(auditInfo.ToDictionary()))
+                        {
+                            Logger.LogInformation($"{auditInfo}");
+                        }
                     }
                 }
             }
         }
         private bool MustBeAudited(HttpContext context)
         {
-            return Options.ExcludedPaths.Where(path => context.Request.GetDisplayUrl().IndexOf(path) != -1).Count() == 0;
-        }        
+
+            return context.Request.Method != "OPTIONS"
+                && Options.ExcludedPaths.Where(path => context.Request.GetDisplayUrl().IndexOf(path) != -1).Count() == 0;
+        }
     }
 
-    
+
     public static class AuditMiddlewareExtensions
     {
         public static IApplicationBuilder UseAuditMiddleware(this IApplicationBuilder builder, AuditMiddlewareOptions options = null)

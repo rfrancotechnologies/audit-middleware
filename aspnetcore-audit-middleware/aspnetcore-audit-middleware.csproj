@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
-    <Version>0.0.1</Version>
+    <Version>0.0.2</Version>
     <PackageId>Com.RFranco.AspNetCore.Audit</PackageId>
     <Title>Com.RFranco.AspNetCore.Audit</Title>
     <Description>ASP.Net Core Audit Middleware</Description>
@@ -14,7 +14,7 @@
     <PackageIconUrl>http://www.rfranco.com/rfjobs/wp-content/uploads/2018/06/logo_pica_grupo.png</PackageIconUrl>
     <IncludeSource>false</IncludeSource>
     <PackageReleaseNotes>
-      First Version
+      Fixxed Seek error on Get operations.
     </PackageReleaseNotes>
   </PropertyGroup>
 

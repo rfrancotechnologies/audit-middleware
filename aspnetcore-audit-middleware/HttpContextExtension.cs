@@ -140,14 +140,18 @@ namespace Com.RFranco.AsptNetCore.Audit
         }
         private static async Task<AuditRequest> AuditRequest(this HttpContext context)
         {
-            var requestBodyStream = new MemoryStream();
-            context.Request.Body.Seek(0, SeekOrigin.Begin);
-            await context.Request.Body.CopyToAsync(requestBodyStream);
-            requestBodyStream.Seek(0, SeekOrigin.Begin);
-
-            var requestBodyText = new StreamReader(requestBodyStream).ReadToEnd();
-            requestBodyStream.Seek(0, SeekOrigin.Begin);
-            context.Request.Body = requestBodyStream;
+            string requestBodyText = string.Empty;
+            
+            if(context.Request.Body.CanSeek)
+            {
+                var requestBodyStream = new MemoryStream();
+                context.Request.Body.Seek(0, SeekOrigin.Begin);
+                await context.Request.Body.CopyToAsync(requestBodyStream);
+                requestBodyStream.Seek(0, SeekOrigin.Begin);
+                requestBodyText = new StreamReader(requestBodyStream).ReadToEnd();
+                requestBodyStream.Seek(0, SeekOrigin.Begin);
+                context.Request.Body = requestBodyStream;
+            }
 
             return new AuditRequest
             {
